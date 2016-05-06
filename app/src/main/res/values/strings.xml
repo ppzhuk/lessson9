@@ -1,5 +1,22 @@
 <resources>
-    <string name="app_name">lesson9</string>
-    <string name="action_add">Add</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="app_name">Simple weather</string>
+    <string name="action_update">Update</string>
+    <string name="action_auto_update">Set auto update</string>
+    <string name="action_add">Add city</string>
+    <string name="alert_dialog_title">Enter new city</string>
+    <string name="action_delete">Delete</string>
+    <string name="weather_icon">Weather icon</string>
+
+    <string name="updated">Last update:</string>
+    <string name="humidity">Humidity:</string>
+    <string name="pressure">Pressure:</string>
+    <string name="never">never</string>
+    <string name="alarm_on">Hourly auto update turns on.</string>
+    <string name="alarm_off">Auto update turns off.</string>
+
+    <string name="open_weather_maps_app_id">4f46d8b1cbbbe4c5727301470db252d4</string>
+
+    <string name="forecast_download_error">Error while downloading forecast</string>
+    <string name="forecast_parse_error">Can\'t parse forecast data</string>
+    <string name="forecast_duplicate_error">City duplicates</string>
 </resources>

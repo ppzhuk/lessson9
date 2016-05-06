@@ -26,8 +26,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-public class WeatherFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+public class WeatherFragment extends Fragment {
     public static final String TAG = "WeatherFragment";
     public static final String EXTRA_ID = "ru.ppzh.id";
 
@@ -77,17 +76,24 @@ public class WeatherFragment extends Fragment
         pressureField = (TextView) rootView.findViewById(R.id.pressure_field);
 
         root = rootView;
-        getActivity().getSupportLoaderManager().initLoader(1, null, this);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new ReadForecast().execute(Long.toString(forecastID));
     }
 
     private void renderForecast() {
         cityField.setText(forecast.getCity() + ", " + forecast.getCountry());
         updatedField.setText(forecast.getUpdated());
         detailsField.setText(forecast.getDescription());
-        humidityField.setText(getString(R.string.humidity) + " " + forecast.getHumidity() + " %");
-        pressureField.setText(getString(R.string.pressure) + " " + forecast.getPressure() + " hPa");
+        humidityField.setText(getString(R.string.humidity) +
+                " " + forecast.getHumidity() + " %");
+        pressureField.setText(getString(R.string.pressure) +
+                " " + forecast.getPressure() + " hPa");
         double t = forecast.getTemperature();
         currentTemperatureField.setText((t >= 0 ? "+" : "") +
                 String.format("%.2f", t) + CELSIUS);
@@ -129,30 +135,6 @@ public class WeatherFragment extends Fragment
         weatherIcon.setImageResource(icon);
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(
-                getContext(),
-                MasterFragment.FORECASTS_URI,
-                null,
-                "_ID = " + Long.toString(forecastID),
-                null, null
-        );
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ForecastCursor forecastCursor = new ForecastCursor(data);
-        forecastCursor.moveToFirst();
-        forecast = forecastCursor.getForecast();
-
-        renderForecast();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
     private class DownloadForecast extends AsyncTask<String, Void, Forecast> {
 
         @Override
@@ -182,6 +164,37 @@ public class WeatherFragment extends Fragment
             if (f == null) {
                 Log.e(TAG, getString(R.string.forecast_download_error));
                 Snackbar.make(root, R.string.forecast_download_error, Snackbar.LENGTH_LONG).show();
+            } else {
+                forecast = f;
+                renderForecast();
+            }
+        }
+    }
+
+    private class ReadForecast extends AsyncTask<String, Void, Forecast> {
+
+        @Override
+        protected Forecast doInBackground(String... params) {
+            Cursor cursor = getActivity().getContentResolver().query(
+                    MasterFragment.FORECASTS_URI,
+                    null,
+                    "_ID = " + params[0],
+                    null, null
+            );
+            Forecast forecast = null;
+            if (cursor != null) {
+                ForecastCursor fc = new ForecastCursor(cursor);
+                fc.moveToFirst();
+                forecast = fc.getForecast();
+                cursor.close();
+            }
+            return forecast;
+        }
+
+        @Override
+        protected void onPostExecute(Forecast f) {
+            if (f == null) {
+                Log.e(TAG, "Forecast is null!");
             } else {
                 forecast = f;
                 renderForecast();

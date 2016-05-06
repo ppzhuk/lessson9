@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForecastCursorAdapter extends CursorAdapter {
     public static final String TAG = "ForecastCursorAdapter";
 

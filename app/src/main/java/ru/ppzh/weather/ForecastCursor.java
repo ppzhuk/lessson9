@@ -3,6 +3,9 @@ package ru.ppzh.weather;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForecastCursor extends CursorWrapper {
 
     public ForecastCursor(Cursor cursor) {
@@ -26,5 +29,15 @@ public class ForecastCursor extends CursorWrapper {
         f.setSunrise(getLong(getColumnIndex(ForecastsTable.COLUMN_IMAGE_SUNRISE)));
         f.setSunset(getLong(getColumnIndex(ForecastsTable.COLUMN_IMAGE_SUNSET)));
         return f;
+    }
+
+    public List<Forecast> getAll() {
+        List<Forecast> list = new ArrayList<>(getCount());
+        moveToFirst();
+        while (!isAfterLast()) {
+            list.add(getForecast());
+            moveToNext();
+        }
+        return list;
     }
 }

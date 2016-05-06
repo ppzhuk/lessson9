@@ -72,13 +72,15 @@ public class MasterFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(getContext(), DetailsActivity.class);
+//                Intent intent = new Intent(getContext(), DetailsActivity.class);
+                Intent intent = new Intent(getContext(), DetailsPagerActivity.class);
                 intent.putExtra(WeatherFragment.EXTRA_ID, id);
                 startActivity(intent);
             }
         });
 
-        getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        getActivity().getSupportLoaderManager().initLoader(
+                MainActivity.MASTER_FRAGMENT_LOADER_ID, null, this);
 
         return view;
     }
