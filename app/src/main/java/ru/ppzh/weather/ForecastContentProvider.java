@@ -49,7 +49,7 @@ public class ForecastContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        Log.d(TAG, "Insertion: " + values.toString());
+        Log.i(TAG, "Insertion: " + values.toString());
 
         int match = uriMatcher.match(uri);
         String tableName;
@@ -62,7 +62,7 @@ public class ForecastContentProvider extends ContentProvider {
         }
         long rowId = helper.getWritableDatabase().insert(tableName, null, values);
 
-        Log.d(TAG, "Inserted ID: " + rowId);
+        Log.i(TAG, "Inserted ID: " + rowId);
 
         Uri inserted = ContentUris.withAppendedId(uri, rowId);
         getContext().getContentResolver().notifyChange(inserted, null);
@@ -72,7 +72,7 @@ public class ForecastContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
-        Log.d(TAG, "Delete");
+        Log.i(TAG, "Delete");
 
         int match = uriMatcher.match(uri);
         String tableName;
@@ -95,7 +95,7 @@ public class ForecastContentProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
-        Log.d(TAG, "Updating: " + values.toString());
+        Log.i(TAG, "Updating: " + values.toString());
 
         int match = uriMatcher.match(uri);
         String tableName;
@@ -118,7 +118,7 @@ public class ForecastContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, "Query");
+        Log.i(TAG, "Query");
 
         int match = uriMatcher.match(uri);
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();

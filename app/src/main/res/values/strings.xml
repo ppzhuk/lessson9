@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Simple weather</string>
-    <string name="action_update">Update</string>
+    <string name="action_update_all">Update all cities</string>
+    <string name="action_update_one">Update current city</string>
     <string name="action_auto_update">Set auto update</string>
     <string name="action_add">Add city</string>
     <string name="alert_dialog_title">Enter new city</string>

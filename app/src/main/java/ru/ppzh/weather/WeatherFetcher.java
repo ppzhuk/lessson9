@@ -49,7 +49,6 @@ public class WeatherFetcher {
 
             JSONObject data = new JSONObject(json.toString());
 
-            // 404 for unsuccessful request
             if (data.getInt("cod") != 200) {
                 Log.e(TAG, "Unsuccessful request.");
                 return null;

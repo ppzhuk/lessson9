@@ -121,7 +121,7 @@ public class Forecast {
     public void setPressure(int pressure) {
         this.pressure = pressure;
     }
-    
+
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
 

@@ -6,13 +6,16 @@
     <item
         android:id="@+id/fragment_master_action_add"
         android:title="@string/action_add"
+        android:icon="@android:drawable/ic_menu_add"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/fragment_master_action_update"
-        android:title="@string/action_update"
+        android:title="@string/action_update_all"
+        android:icon="@android:drawable/ic_popup_sync"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/fragment_master_set_auto_update"
         android:title="@string/action_auto_update"
+        android:icon="@drawable/ic_auto_update"
         app:showAsAction="ifRoom" />
 </menu>

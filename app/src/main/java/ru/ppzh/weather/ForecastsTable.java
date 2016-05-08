@@ -1,6 +1,6 @@
 package ru.ppzh.weather;
 
-        import android.provider.BaseColumns;
+import android.provider.BaseColumns;
 
 interface ForecastsTable extends BaseColumns {
     String TABLE_NAME = "forecasts";

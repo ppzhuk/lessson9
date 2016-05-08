@@ -1,9 +1,9 @@
 package ru.ppzh.weather;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,10 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.List;
 
 public class DetailsPagerActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        WeatherFragment.Callbacks {
 
     private ViewPager mViewPager;
     private List<Forecast> forecasts;
+    private long forecastID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +27,10 @@ public class DetailsPagerActivity extends AppCompatActivity
         mViewPager = new ViewPager(this);
         mViewPager.setId(R.id.viewPager);
         setContentView(mViewPager);
+        forecastID = getIntent().getLongExtra(WeatherFragment.EXTRA_ID, -1);
 
         getSupportLoaderManager().initLoader(
                 MainActivity.DETAILS_PAGER_ACTIVITY_LOADER_ID, null, this);
-
-
     }
 
     @Override
@@ -56,17 +57,23 @@ public class DetailsPagerActivity extends AppCompatActivity
             }
         });
 
-        long forecastID = getIntent().getLongExtra(WeatherFragment.EXTRA_ID, -1);
+
         for (int i = 0; i < forecasts.size(); i++) {
             if (forecasts.get(i).getId() == forecastID) {
                 mViewPager.setCurrentItem(i);
                 break;
             }
         }
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void updateCurrentItem(long pos) {
+        forecastID = pos;
     }
 }

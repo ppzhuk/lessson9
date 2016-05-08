@@ -14,7 +14,7 @@ public class UpdateService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "In " + TAG + " onHandleIntent.");
+        Log.i(TAG, "In " + TAG + " onHandleIntent.");
 
         DBUpdater updater = new DBUpdater(getApplicationContext());
         Cursor c = getApplicationContext().getContentResolver().query(

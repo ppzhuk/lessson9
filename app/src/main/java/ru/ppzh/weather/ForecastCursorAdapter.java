@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ForecastCursorAdapter extends CursorAdapter {
     public static final String TAG = "ForecastCursorAdapter";
 
@@ -45,7 +42,7 @@ public class ForecastCursorAdapter extends CursorAdapter {
         holder.update.setText(f.getUpdated());
         double t = f.getTemperature();
         holder.temperature.setText((t >= 0 ? "+" : "") + String.format("%.2f", t)
-                + WeatherFragment.CELSIUS);
+                + " °C");
     }
 
     class ViewHolder {

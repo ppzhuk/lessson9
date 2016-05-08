@@ -4,6 +4,7 @@
     tools:context=".WeatherFragment">
     <item
         android:id="@+id/fragment_weather_action_update"
-        android:title="@string/action_update"
+        android:title="@string/action_update_one"
+        android:icon="@drawable/ic_single_city_update"
         app:showAsAction="ifRoom" />
 </menu>

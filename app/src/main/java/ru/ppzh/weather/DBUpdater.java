@@ -11,7 +11,7 @@ import org.json.JSONObject;
 public class DBUpdater {
     public static final String TAG = "DBUpdater";
 
-    Context context;
+    private Context context;
 
     public DBUpdater(Context context) {
         this.context = context;

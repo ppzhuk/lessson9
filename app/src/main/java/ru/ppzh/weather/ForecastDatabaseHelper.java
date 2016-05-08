@@ -36,7 +36,7 @@ public class ForecastDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_FORECASTS_TABLE);
 
-        Log.d(TAG, "Database created.");
+        Log.i(TAG, "Database created.");
     }
 
     @Override

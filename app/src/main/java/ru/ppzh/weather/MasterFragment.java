@@ -38,17 +38,45 @@ public class MasterFragment extends Fragment
 
     public static final Uri FORECASTS_URI = Uri.withAppendedPath(ForecastContentProvider.CONTENT_URI, "forecasts");
 
-    public static final int _10SEC = 1000 * 10;
     public static final String SHARED_PREFERENCES = "preferences";
     public static final String ALARM_PREFERENCE = "alarm_preference";
 
-    View root;
-    ListView list;
-    ForecastCursorAdapter adapter;
-    WeatherFetcher fetcher;
+    private View root;
+    private ListView list;
+    private ForecastCursorAdapter adapter;
+    private WeatherFetcher fetcher;
+
+    private Callbacks callback;
+    private long selectedCity = -1;
+
+    public interface Callbacks {
+        void onCitySelected(long id);
+
+        void updateCity(long id);
+
+        void onCityDeleted(long id);
+    }
 
     public static MasterFragment newInstance() {
         return new MasterFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            callback = (Callbacks) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement MasterFragment.Callbacks");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
     }
 
     @Override
@@ -72,10 +100,9 @@ public class MasterFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-//                Intent intent = new Intent(getContext(), DetailsActivity.class);
-                Intent intent = new Intent(getContext(), DetailsPagerActivity.class);
-                intent.putExtra(WeatherFragment.EXTRA_ID, id);
-                startActivity(intent);
+                selectedCity = id;
+                callback.onCitySelected(id);
+
             }
         });
 
@@ -131,8 +158,6 @@ public class MasterFragment extends Fragment
                     AlarmManager.ELAPSED_REALTIME,
                     AlarmManager.INTERVAL_HOUR,
                     AlarmManager.INTERVAL_HOUR,
-//                    _10SEC,
-//                    _10SEC,
                     alarmIntent
             );
             Snackbar.make(root, R.string.alarm_on, Snackbar.LENGTH_LONG).show();
@@ -154,6 +179,13 @@ public class MasterFragment extends Fragment
                 }
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+                callback.updateCity(selectedCity);
+            }
         }.execute();
     }
 
@@ -169,9 +201,9 @@ public class MasterFragment extends Fragment
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.delete_city:
-
                 Uri uri = ContentUris.withAppendedId(FORECASTS_URI, info.id);
                 getActivity().getContentResolver().delete(uri, null, null);
+                callback.onCityDeleted(info.id);
 
                 return true;
             default:
@@ -232,7 +264,7 @@ public class MasterFragment extends Fragment
                 if (forecast == null) {
                     Log.e(TAG, getString(R.string.forecast_parse_error) + " (City: " + params[0] + ").");
                 } else {
-                    isDuplicate(forecast);
+                    duplicate = isDuplicate(forecast);
                 }
                 return forecast;
             }
@@ -253,7 +285,7 @@ public class MasterFragment extends Fragment
             }
         }
 
-        void isDuplicate(Forecast forecast) {
+        boolean isDuplicate(Forecast forecast) {
             ForecastCursor cursor = (ForecastCursor) adapter.getCursor();
             Forecast f;
             if (cursor != null) {
@@ -262,13 +294,12 @@ public class MasterFragment extends Fragment
                     f = cursor.getForecast();
                     if (forecast.getCity().equals(f.getCity()) &&
                             forecast.getCountry().equals(f.getCountry())) {
-                        duplicate = true;
-                        break;
+                        return true;
                     }
                     cursor.moveToNext();
                 }
             }
-
+            return false;
         }
     }
 }

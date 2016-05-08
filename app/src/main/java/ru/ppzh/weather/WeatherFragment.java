@@ -2,6 +2,8 @@ package ru.ppzh.weather;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -9,9 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,8 +29,6 @@ public class WeatherFragment extends Fragment {
     public static final String TAG = "WeatherFragment";
     public static final String EXTRA_ID = "ru.ppzh.id";
 
-    public static final String CELSIUS = " °C";
-
     private View root;
     private TextView cityField;
     private TextView updatedField;
@@ -45,8 +42,14 @@ public class WeatherFragment extends Fragment {
 
     private Forecast forecast;
     private long forecastID = -1;
+    private Callbacks callback;
+
+    public interface Callbacks {
+        void updateCurrentItem(long pos);
+    }
 
     public static WeatherFragment newInstance(long id) {
+
         WeatherFragment weatherFragment = new WeatherFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(EXTRA_ID, id);
@@ -60,6 +63,7 @@ public class WeatherFragment extends Fragment {
         setHasOptionsMenu(true);
         fetcher = new WeatherFetcher(getActivity());
         forecastID = getArguments().getLong(EXTRA_ID);
+
     }
 
     @Nullable
@@ -76,27 +80,59 @@ public class WeatherFragment extends Fragment {
         pressureField = (TextView) rootView.findViewById(R.id.pressure_field);
 
         root = rootView;
+        new ReadForecast().execute(Long.toString(forecastID));
 
         return rootView;
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            callback = (Callbacks) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
+
+    // If app went into 2-pane mode (after orientation change) while WeatherFragment
+    // was foreground, then WeatherFragment must be closed in purpose to show 2-pane layout.
+    @Override
     public void onResume() {
         super.onResume();
-        new ReadForecast().execute(Long.toString(forecastID));
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE &&
+                getActivity() instanceof DetailsPagerActivity) {
+
+            getActivity().onBackPressed();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
     }
 
     private void renderForecast() {
         cityField.setText(forecast.getCity() + ", " + forecast.getCountry());
         updatedField.setText(forecast.getUpdated());
         detailsField.setText(forecast.getDescription());
-        humidityField.setText(getString(R.string.humidity) +
-                " " + forecast.getHumidity() + " %");
-        pressureField.setText(getString(R.string.pressure) +
-                " " + forecast.getPressure() + " hPa");
+
+        if (isAdded()) {
+            humidityField.setText(getString(R.string.humidity) +
+                    " " + forecast.getHumidity() + " %");
+            pressureField.setText(getString(R.string.pressure) +
+                    " " + forecast.getPressure() + " hPa");
+        } else {
+            humidityField.setText(forecast.getHumidity() + " %");
+            pressureField.setText(forecast.getPressure() + " hPa");
+        }
+
         double t = forecast.getTemperature();
         currentTemperatureField.setText((t >= 0 ? "+" : "") +
-                String.format("%.2f", t) + CELSIUS);
+                String.format("%.2f", t) + " °C");
         renderIcon(forecast.getForecastId(), forecast.getSunrise(), forecast.getSunset());
     }
 
@@ -135,6 +171,7 @@ public class WeatherFragment extends Fragment {
         weatherIcon.setImageResource(icon);
     }
 
+
     private class DownloadForecast extends AsyncTask<String, Void, Forecast> {
 
         @Override
@@ -145,6 +182,8 @@ public class WeatherFragment extends Fragment {
                 forecast = fetcher.getForecast(data);
 
                 if (forecast != null) {
+                    forecast.setId(Long.parseLong(params[1]));
+                    callback.updateCurrentItem(forecast.getId());
 
                     Uri uri = ContentUris.withAppendedId(
                             MasterFragment.FORECASTS_URI,
@@ -175,6 +214,9 @@ public class WeatherFragment extends Fragment {
 
         @Override
         protected Forecast doInBackground(String... params) {
+            if (!isAdded()) {
+                return null;
+            }
             Cursor cursor = getActivity().getContentResolver().query(
                     MasterFragment.FORECASTS_URI,
                     null,
@@ -194,7 +236,7 @@ public class WeatherFragment extends Fragment {
         @Override
         protected void onPostExecute(Forecast f) {
             if (f == null) {
-                Log.e(TAG, "Forecast is null!");
+                Log.e(TAG, "Can't read forecast from database. Forecast is null!");
             } else {
                 forecast = f;
                 renderForecast();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,80 +9,92 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".WeatherFragment"
-    android:background="#FF0099CC" >
+    android:background="#FF0099CC"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/city_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        tools:text="Khabarovsk"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ffffff"
-        android:gravity="center" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    <TextView
-        android:id="@+id/updated_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/city_field"
-        android:layout_centerHorizontal="true"
-        tools:text="never"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="13sp"
-        android:textColor="#ffffff" />
+            <TextView
+                android:id="@+id/city_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Khabarovsk"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:layout_gravity="top|center_horizontal" />
 
+            <TextView
+                android:id="@+id/updated_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="never"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="13sp"
+                android:textColor="#ffffff"
+                android:layout_gravity="top|center_horizontal" />
+        </LinearLayout>
 
-    <ImageView
-        android:id="@+id/weather_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/sunny"
-        android:contentDescription="@string/weather_icon"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4">
 
-    <TextView
-        android:id="@+id/current_temperature_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="40sp"
-        tools:text="+10 °C"
-        android:textColor="#ffffff" />
+            <ImageView
+                android:id="@+id/weather_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/sunny"
+                android:contentDescription="@string/weather_icon"
+                android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:id="@+id/details_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/weather_icon"
-        android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:text="Sunny"
-        android:textColor="#ffffff"
-        android:gravity="center" />
+            <TextView
+                android:id="@+id/details_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:text="Sunny"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Humidity: 100 %"
-        android:id="@+id/humidity_field"
-        android:layout_below="@+id/details_field"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_centerHorizontal="true"
-        android:textColor="#ffffff" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Humidity: 100 %"
+                android:id="@+id/humidity_field"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:text="Pressure: 1024 hPa"
-        android:id="@+id/pressure_field"
-        android:layout_below="@+id/humidity_field"
-        android:layout_centerHorizontal="true"
-        android:textColor="#ffffff" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:text="Pressure: 1024 hPa"
+                android:id="@+id/pressure_field"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
 
-</RelativeLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/current_temperature_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="40sp"
+                tools:text="+10 °C"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+</LinearLayout>
